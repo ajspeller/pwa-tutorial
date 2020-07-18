@@ -55,6 +55,10 @@ self.addEventListener('fetch', (evt) => {
           })
         );
       })
-      .catch(() => caches.match('/pages/fallback.html'))
+      .catch(() => {
+        if (evt.request.url.includes('.html')) {
+          return caches.match('/pages/fallback.html');
+        }
+      })
   );
 });
