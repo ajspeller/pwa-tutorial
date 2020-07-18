@@ -1,10 +1,12 @@
+const recipes = document.querySelector('.recipes');
+
 //Helper Functions
 const renderRecipe = (data, id) => {
   const html = `
     <div class="card-panel recipe white row" data-id=${id}>
       <img src="/img/dish.png" alt="recipe thumb">
       <div class="recipe-details">
-        <div class="recipe-title">${data.name}</div>
+        <div class="recipe-title">${data.title}</div>
       <div class="recipe-ingredients">${data.ingredients}</div>
       </div>
       <div class="recipe-delete">
@@ -13,7 +15,7 @@ const renderRecipe = (data, id) => {
     </div>
   `;
 
-  // recipes.innerHTML += html;
+  recipes.innerHTML += html;
 };
 
 const removeRecipe = (id) => {
@@ -25,16 +27,14 @@ const removeRecipe = (id) => {
 // this with Firebase is easier than with other databases.
 // check solution for IndexedDB with other technologies
 db.enablePersistence().catch(function (err) {
-  if (err.code == 'failed-precondition') {
+  if (err.code === 'failed-precondition') {
     // probably multible tabs open at once
-    console.log('persistance failed');
-  } else if (err.code == 'unimplemented') {
+    console.log('persistence failed');
+  } else if (err.code === 'unimplemented') {
     // lack of browser support for the feature
-    console.log('persistance not available');
+    console.log('persistence not available');
   }
 });
-
-console.log('test');
 
 //here comes the comunication with data base
 db.collection('recipes').onSnapshot((snapshot) => {
