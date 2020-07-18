@@ -50,27 +50,27 @@ self.addEventListener('activate', (evt) => {
 
 self.addEventListener('fetch', (evt) => {
   // console.log('fetch event', evt);
-  if (!(evt.request.url.indexOf('http') === 0)) return;
-  evt.respondWith(
-    caches
-      .match(evt.request)
-      .then((cacheResponse) => {
-        // if not in the cache make the fetch call
-        return (
-          cacheResponse ||
-          fetch(evt.request).then((fetchResponse) => {
-            return caches.open(dynamicCacheName).then((cache) => {
-              cache.put(evt.request.url, fetchResponse.clone());
-              limitCacheSize(dynamicCacheName, 15);
-              return fetchResponse;
-            });
-          })
-        );
-      })
-      .catch(() => {
-        if (evt.request.url.includes('.html')) {
-          return caches.match('/pages/fallback.html');
-        }
-      })
-  );
+  // if (!(evt.request.url.indexOf('http') === 0)) return;
+  // evt.respondWith(
+  //   caches
+  //     .match(evt.request)
+  //     .then((cacheResponse) => {
+  //       // if not in the cache make the fetch call
+  //       return (
+  //         cacheResponse ||
+  //         fetch(evt.request).then((fetchResponse) => {
+  //           return caches.open(dynamicCacheName).then((cache) => {
+  //             cache.put(evt.request.url, fetchResponse.clone());
+  //             limitCacheSize(dynamicCacheName, 15);
+  //             return fetchResponse;
+  //           });
+  //         })
+  //       );
+  //     })
+  //     .catch(() => {
+  //       if (evt.request.url.includes('.html')) {
+  //         return caches.match('/pages/fallback.html');
+  //       }
+  //     })
+  // );
 });
