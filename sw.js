@@ -1,5 +1,5 @@
 const staticCachename = 'sites-static-v2';
-const dynamicCache = 'site-dynamic-v1';
+const dynamicCacheName = 'site-dynamic-v1';
 const assets = [
   '/',
   '/index.html',
@@ -11,6 +11,7 @@ const assets = [
   '/img/dish.png',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.gstatic.com/s/materialicons/v53/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
+  '/pages/fallback.html',
 ];
 
 self.addEventListener('install', (evt) => {
@@ -29,7 +30,7 @@ self.addEventListener('activate', (evt) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys
-          .filter((key) => key !== staticCachename)
+          .filter((key) => key !== staticCachename && key !== dynamicCacheName)
           .map((key) => caches.delete(key))
       );
     })
@@ -40,17 +41,20 @@ self.addEventListener('fetch', (evt) => {
   // console.log('fetch event', evt);
   if (!(evt.request.url.indexOf('http') === 0)) return;
   evt.respondWith(
-    caches.match(evt.request).then((cacheResponse) => {
-      // if not in the cache make the fetch call
-      return (
-        cacheResponse ||
-        fetch(evt.request).then((fetchResponse) => {
-          return caches.open(dynamicCache).then((cache) => {
-            cache.put(evt.request.url, fetchResponse.clone());
-            return fetchResponse;
-          });
-        })
-      );
-    })
+    caches
+      .match(evt.request)
+      .then((cacheResponse) => {
+        // if not in the cache make the fetch call
+        return (
+          cacheResponse ||
+          fetch(evt.request).then((fetchResponse) => {
+            return caches.open(dynamicCacheName).then((cache) => {
+              cache.put(evt.request.url, fetchResponse.clone());
+              return fetchResponse;
+            });
+          })
+        );
+      })
+      .catch(() => caches.match('/pages/fallback.html'))
   );
 });
