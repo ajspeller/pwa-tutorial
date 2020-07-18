@@ -9,6 +9,7 @@ const assets = [
   '/css/materialize.min.css',
   '/img/dish.png',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
+  'https://fonts.gstatic.com/s/materialicons/v53/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
 ];
 
 self.addEventListener('install', (evt) => {
@@ -27,4 +28,9 @@ self.addEventListener('activate', (evt) => {
 
 self.addEventListener('fetch', (evt) => {
   // console.log('fetch event', evt);
+  evt.respondWith(
+    caches.match(evt.request).then((cacheResponse) => {
+      return cacheResponse || fetch(evt.request); // if not in the cache make the fetch call
+    })
+  );
 });
